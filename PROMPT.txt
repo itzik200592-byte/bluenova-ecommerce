@@ -1,0 +1,176 @@
+You are a senior full-stack engineer + UI/UX designer. Build a production-ready one-product eCommerce site in Next.js for an Israeli market. The brand is "BlueNova" and the flagship product is "NovaTrack 360™" (AI face tracking 360° phone gimbal/tripod). The site language is Hebrew only and must support full RTL.
+
+GOALS
+- Create a one-product funnel website that converts.
+- Payments: PayPal (initially).
+- Fulfillment: Orders are automatically created in CJ Dropshipping via CJ API after successful payment.
+- Admin: Minimal admin dashboard to view orders and statuses.
+- Must be SEO-friendly, fast, mobile-first, and accessible.
+
+STACK (Required)
+- Next.js 14+ (App Router), TypeScript
+- TailwindCSS
+- DB: SQLite (via Prisma) for local/dev; allow easy switch to Postgres
+- Auth for admin: simple password-based session (NextAuth optional) OR custom admin login with bcrypt + cookie session
+- Email: optional, but structure so it can be added later (Resend/SMTP)
+
+DESIGN / BRAND
+- Visual style: premium tech, dark theme, subtle neon blue accents.
+- Colors:
+  - Background: #0B0F1A
+  - Card: #111827
+  - Primary CTA: #1E90FF
+  - Accent glow: rgba(30,144,255,0.35)
+  - Text: #E5E7EB
+- Typography: modern sans (e.g., Inter). Ensure RTL support.
+- Animations: subtle (hover glows, section fade-in). Avoid heavy motion.
+- Layout: clean, high trust, Apple-like minimal, but techy.
+
+CONTENT (Hebrew, RTL) — Include these key sections on a single main landing page:
+1) HERO
+   - Headline (Hebrew): "תצלם לבד. תיראה מקצועי. תגדל מהר יותר."
+   - Sub: "NovaTrack 360™ – מערכת צילום חכמה שעוקבת אחריך אוטומטית ומייצרת וידאו יציב ומקצועי בלי צלם."
+   - Primary CTA button: "קנייה מאובטחת"
+   - Secondary CTA: "איך זה עובד?"
+   - Product image/video placeholder (do not fetch external assets; use placeholders)
+
+2) PROBLEM → SOLUTION
+   - Explain pain: קשה לצלם לבד, לא יציב, צריך עוד בן אדם, בזבוז זמן/כסף
+   - Solution: AI face tracking + 360 rotation
+
+3) HOW IT WORKS (3 steps)
+   - 1. מציבים את הטלפון
+   - 2. מפעילים מצב מעקב
+   - 3. מצלמים – והוא עוקב אחריך
+
+4) WHO IT'S FOR (segments)
+   - בעלי עסקים, מאמנים, קוסמטיקאיות, יוצרי תוכן, מטפלים, מנהלי סושיאל
+
+5) BENEFITS GRID
+   - מעקב פנים AI
+   - 360° סיבוב אוטומטי
+   - חצובה יציבה
+   - קל לתפעול
+   - מתאים ללייב/רילס/סטוריז
+
+6) SOCIAL PROOF
+   - Add review card components with placeholders (no fake claims). Use neutral "לקוחות מדווחים" style; allow admin to add real reviews later.
+
+7) SPECIFICATIONS (table)
+   - placeholders for battery/compatibility/etc; clearly marked "ייתכן שינוי בין גרסאות".
+
+8) SHIPPING & POLICY (Important)
+   - משלוח: "עד 21 ימי עסקים"
+   - ניסיון: "7 ימי עסקים לניסיון"
+   - החזר: "החזר/החלפה רק באריזה מקורית"
+   - Add clear disclaimer about delivery times and tracking.
+
+9) FAQ (accordion)
+
+10) FINAL CTA + Sticky mobile CTA bar
+   - Sticky bottom bar on mobile with price + "לקנייה"
+
+PRODUCT / PRICING
+- Product name: NovaTrack 360™
+- Price: 299 ₪
+- Currency: ILS
+- Quantity: 1+ (no variants for now)
+- One main product; allow adding more later.
+
+CHECKOUT FLOW (Required)
+- Cart can be skipped (direct buy), but keep a minimal cart state.
+- Collect customer details:
+  - Full name
+  - Phone
+  - Email
+  - Address (street, city, zip)
+- Validate inputs (Israeli phone patterns).
+- After PayPal payment success:
+  - Create an order record in DB
+  - Call CJ API to create fulfillment order
+  - Store CJ order id and tracking when available
+  - Show success page with order number and status
+
+PAYPAL INTEGRATION
+- Use PayPal Checkout (server-side verification).
+- Implement:
+  - Create order endpoint
+  - Capture payment endpoint
+  - Webhook handler (recommended) to confirm payments
+- Store transaction id and payment status.
+
+CJ API INTEGRATION (Critical)
+- Implement a service module: /lib/cj.ts
+- Use environment variables:
+  - CJ_API_KEY (or token)
+  - CJ_BASE_URL
+  - CJ_EMAIL / CJ_PASSWORD if needed for token flow
+- Provide an adapter layer with functions:
+  - cjCreateOrder(order)
+  - cjGetOrderStatus(cjOrderId)
+  - cjGetTracking(cjOrderId)
+- Because exact CJ endpoints/fields can vary, implement with:
+  - Clearly marked placeholder endpoint paths and payload mappings
+  - A single configuration object to map our internal order schema to CJ payload
+  - Inline comments: "Replace with official CJ docs fields"
+- Add retry logic + error handling:
+  - If CJ creation fails, mark order as "FULFILLMENT_PENDING" and show admin alert.
+- Add a background polling route (cron-ready) that checks pending CJ orders and updates tracking.
+
+DATABASE (Prisma)
+Models:
+- Order:
+  - id (uuid)
+  - createdAt
+  - customerName, phone, email
+  - address1, city, zip
+  - totalAmount, currency
+  - paymentProvider ("PAYPAL")
+  - paymentStatus (PENDING/PAID/FAILED/REFUNDED)
+  - paypalOrderId, paypalCaptureId
+  - fulfillmentStatus (NOT_SENT/SENT/PENDING/FAILED/SHIPPED/DELIVERED)
+  - cjOrderId, trackingNumber, trackingUrl
+  - notes
+
+ADMIN DASHBOARD
+- /admin login
+- /admin/orders list with filters by status
+- Order details page with:
+  - customer info
+  - payment status
+  - fulfillment status
+  - CJ order id
+  - tracking info
+  - manual "Retry Send to CJ" button
+  - manual "Mark as Shipped" (fallback)
+- Protect admin routes.
+
+TECH REQUIREMENTS
+- Full RTL support:
+  - <html dir="rtl" lang="he">
+  - Use logical CSS
+- SEO:
+  - metadata, OpenGraph
+- Performance:
+  - Server components where appropriate
+- Security:
+  - validate all inputs
+  - do not expose secrets to client
+  - CSRF protection for admin actions
+
+DELIVERABLES
+1) Complete Next.js project structure with all pages/components.
+2) Clear .env.example with required variables.
+3) README with:
+   - setup steps
+   - how to configure PayPal sandbox
+   - where to paste CJ API credentials
+   - how to test a full order end-to-end
+4) Provide dummy placeholders for product images/videos (local).
+
+IMPORTANT
+- Do not invent factual product specs or fake reviews. Use placeholders or neutral wording.
+- All UI text must be Hebrew.
+- The site should look premium and trustworthy.
+
+Start by outputting the file/folder structure, then provide the main code files.

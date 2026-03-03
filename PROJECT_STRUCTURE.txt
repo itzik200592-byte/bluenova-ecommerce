@@ -1,0 +1,93 @@
+bluenova-ecommerce/
+├── .gitignore
+├── .env.example
+├── .env.local (local only, not in git)
+├── package.json
+├── tsconfig.json
+├── tailwind.config.ts
+├── next.config.js
+├── prisma/
+│   ├── schema.prisma
+│   └── migrations/
+├── public/
+│   ├── images/
+│   │   ├── nova-track-hero.svg (placeholder)
+│   │   └── nova-track-product.svg (placeholder)
+│   └── favicon.ico
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx (root layout, RTL)
+│   │   ├── page.tsx (landing page)
+│   │   ├── checkout/
+│   │   │   ├── page.tsx (checkout form)
+│   │   │   └── success/page.tsx (order success)
+│   │   ├── api/
+│   │   │   ├── orders/
+│   │   │   │   ├── route.ts (POST to create order)
+│   │   │   │   └── [id]/
+│   │   │   │       └── route.ts (GET order details)
+│   │   │   ├── paypal/
+│   │   │   │   ├── create-order/route.ts
+│   │   │   │   └── capture-order/route.ts
+│   │   │   ├── webhooks/
+│   │   │   │   └── paypal/route.ts
+│   │   │   ├── admin/
+│   │   │   │   └── login/route.ts
+│   │   │   └── cron/
+│   │   │       └── update-fulfillment/route.ts
+│   │   ├── admin/
+│   │   │   ├── layout.tsx
+│   │   │   ├── page.tsx (redirect to login or orders)
+│   │   │   ├── login/page.tsx
+│   │   │   ├── orders/
+│   │   │   │   ├── page.tsx (orders list)
+│   │   │   │   └── [id]/page.tsx (order detail)
+│   │   │   └── middleware.ts (admin protection)
+│   │   └── globals.css
+│   ├── components/
+│   │   ├── layout/
+│   │   │   ├── Header.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   └── StickyMobileCtaBar.tsx
+│   │   ├── sections/
+│   │   │   ├── Hero.tsx
+│   │   │   ├── ProblemSolution.tsx
+│   │   │   ├── HowItWorks.tsx
+│   │   │   ├── WhoItsFor.tsx
+│   │   │   ├── BenefitsGrid.tsx
+│   │   │   ├── SocialProof.tsx
+│   │   │   ├── Specifications.tsx
+│   │   │   ├── ShippingPolicy.tsx
+│   │   │   ├── FAQ.tsx
+│   │   │   └── FinalCTA.tsx
+│   │   ├── checkout/
+│   │   │   ├── CheckoutForm.tsx
+│   │   │   ├── CustomerDetails.tsx
+│   │   │   ├── OrderSummary.tsx
+│   │   │   └── PayPalCheckout.tsx
+│   │   ├── admin/
+│   │   │   ├── OrdersList.tsx
+│   │   │   ├── OrderDetail.tsx
+│   │   │   ├── OrderFilters.tsx
+│   │   │   └── RetryFulfillmentButton.tsx
+│   │   └── common/
+│   │       ├── Button.tsx
+│   │       ├── Input.tsx
+│   │       ├── Card.tsx
+│   │       ├── Badge.tsx
+│   │       └── LoadingSpinner.tsx
+│   ├── lib/
+│   │   ├── db.ts (Prisma client)
+│   │   ├── paypal.ts (PayPal API integration)
+│   │   ├── cj.ts (CJ Dropshipping API integration)
+│   │   ├── auth.ts (Admin auth utilities)
+│   │   ├── validators.ts (Input validation)
+│   │   └── utils.ts (Helper functions)
+│   ├── types/
+│   │   └── index.ts (TypeScript types)
+│   ├── constants/
+│   │   └── config.ts (App constants & branding)
+│   └── hooks/
+│       ├── useCart.ts
+│       └── useAuth.ts (admin auth hook)
+└── README.md
